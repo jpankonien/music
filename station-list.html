@@ -13,7 +13,7 @@
 
   stations.forEach(s => {
     const li = document.createElement("li");
-    li.innerHTML = `<a href="/stations/${s.station_id}/">${s.station_name}</a>`;
+    li.innerHTML = `<a href="/stations?id=${s.station_id}">${s.station_name}</a>`;
     list.appendChild(li);
   });
 })();
