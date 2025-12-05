@@ -1,0 +1,15 @@
+---
+layout: none
+---
+
+<h1>All Stations</h1>
+
+<ul>
+  {% for station in site.data.stations %}
+    <li>
+      <a href="/stations/{{ station.station_id }}/">
+        {{ station.station_name }}
+      </a>
+    </li>
+  {% endfor %}
+</ul>
