@@ -1,30 +1,169 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8" />
-  <title id="title">Loading...</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="title">Loading...</title>
+
+<style>
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+}
+
+.player-container {
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #d6d6d6;
+    border-radius: 12px;
+    padding: 12px;
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+    box-sizing: border-box;
+}
+
+.play-wrapper {
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+}
+
+.station-title {
+    margin-left: 16px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+}
+</style>
 </head>
+
 <body>
-  <h1 id="station-name">Loading...</h1>
-  <audio id="player" controls autoplay></audio>
+
+<div class="player-container">
+
+    <!-- Play/Pause/Stop Button -->
+    <div class="play-wrapper" id="playButton">
+        <svg width="48" height="48" viewBox="0 0 42 42">
+
+            <!-- Background Circle -->
+            <path 
+              d="M21 5.084505690810467 
+                 a 15.915494309189533 15.915494309189533 0 0 1 0 31.830988618379067 
+                 a 15.915494309189533 15.915494309189533 0 0 1 0 -31.830988618379067"
+              fill="#27292D"
+              stroke="#27292D"
+              stroke-width="2">
+            </path>
+
+            <!-- Play Icon -->
+            <path id="playIcon" d="M16 13 L28 21 L16 29 Z" fill="white"></path>
+
+            <!-- Pause Icons -->
+            <path id="pauseLeft"  d="M16 13 H20 V29 H16 Z" fill="white" style="display:none;"></path>
+            <path id="pauseRight" d="M24 13 H28 V29 H24 Z" fill="white" style="display:none;"></path>
+
+            <!-- Stop Icon -->
+            <path 
+              id="stopIcon" 
+              d="M14 14 H28 V28 H14 Z" 
+              fill="white" 
+              style="display:none;">
+            </path>
+
+        </svg>
+    </div>
+
+    <!-- Station Title (Dynamic) -->
+    <div class="station-title" id="stationName">Loading...</div>
+
+</div>
+
+<!-- Hidden Audio Element -->
+<audio id="audio"></audio>
 
 <script>
+// ===============================
+// LOAD STATION FROM URL (?id=xxx)
+// ===============================
+
 (async () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const stationId = urlParams.get("id");
+    const params = new URLSearchParams(window.location.search);
+    const stationId = params.get("id");
 
-  const stations = await fetch("/stations.json").then(r => r.json());
-  const station = stations.find(s => s.station_id === stationId);
+    const stations = await fetch("/stations.json").then(r => r.json());
+    const station = stations.find(s => s.station_id === stationId);
 
-  if (!station) {
-    document.body.innerHTML = "<h1>Station not found</h1>";
-    return;
-  }
+    if (!station) {
+        document.body.innerHTML = "<h1>Station not found</h1>";
+        return;
+    }
 
-  document.getElementById("title").innerText = station.station_name;
-  document.getElementById("station-name").innerText = station.station_name;
-  document.getElementById("player").src = station.station_stream_url;
+    // Set title + station info
+    document.getElementById("title").innerText = station.station_name;
+    document.getElementById("stationName").innerText = station.station_name;
+
+    // Assign stream
+    document.getElementById("audio").src = station.station_stream_url;
 })();
+</script>
+
+<script>
+// ===============================
+// PLAYER LOGIC
+// ===============================
+
+const audio = document.getElementById("audio");
+const btn   = document.getElementById("playButton");
+
+const playIcon  = document.getElementById("playIcon");
+const pauseLeft = document.getElementById("pauseLeft");
+const pauseRight = document.getElementById("pauseRight");
+const stopIcon = document.getElementById("stopIcon");
+
+// Player state: "stopped", "playing", "paused"
+let state = "stopped";
+
+// Toggle sequence: Play → Pause → Stop → Play
+btn.onclick = () => {
+
+    if (state === "stopped") {
+        audio.currentTime = 0;
+        audio.play();
+        state = "playing";
+
+        playIcon.style.display = "none";
+        pauseLeft.style.display = "block";
+        pauseRight.style.display = "block";
+        stopIcon.style.display = "none";
+        return;
+    }
+
+    if (state === "playing") {
+        audio.pause();
+        state = "paused";
+
+        playIcon.style.display = "none";
+        pauseLeft.style.display = "none";
+        pauseRight.style.display = "none";
+        stopIcon.style.display = "block";
+        return;
+    }
+
+    if (state === "paused") {
+        audio.pause();
+        audio.currentTime = 0;
+        state = "stopped";
+
+        playIcon.style.display = "block";
+        pauseLeft.style.display = "none";
+        pauseRight.style.display = "none";
+        stopIcon.style.display = "none";
+        return;
+    }
+};
 </script>
 
 </body>
