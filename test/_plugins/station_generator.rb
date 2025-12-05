@@ -17,7 +17,7 @@ module Jekyll
       @station = station
 
       super(
-        site.in_source_dir("stations/station.html"),
+        site.in_source_dir("_stations/station.html"),
         {
           :site => site,
           :collection => site.collections["stations"]
