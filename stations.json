@@ -1,12 +1,12 @@
 [
   {
-    "station_id": "rock101",
-    "station_name": "Rock 101 FM",
-    "station_stream_url": "https://example.com/rock101.mp3"
+    "station_id": "kyar",
+    "station_name": "Red-C - KYAR",
+    "station_stream_url": "https://ssl-1.stream.miriamtech.net/red-c/KYAR"
   },
   {
-    "station_id": "jazzfm",
-    "station_name": "Jazz FM",
-    "station_stream_url": "https://example.com/jazzfm.mp3"
+    "station_id": "fkss",
+    "station_name": "Sleep Sounds",
+    "station_stream_url": "https://stream.rcs.revma.com/5skkr2gtuy8uv"
   }
 ]
