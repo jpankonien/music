@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title id="title">Loading...</title>
+</head>
+<body>
+  <h1 id="station-name">Loading...</h1>
+
+  <audio id="player" controls autoplay>
+    Your browser does not support the audio element.
+  </audio>
+
+<script>
+(async () => {
+
+  // EXTRACT STATION ID FROM URL
+  const path = window.location.pathname.split("/");
+  const stationId = path[path.length - 1] || path[path.length - 2];
+
+  // LOAD STATIONS DATABASE
+  const stations = await fetch("/stations.json").then(r => r.json());
+  const station = stations.find(s => s.station_id === stationId);
+
+  if (!station) {
+    document.body.innerHTML = "<h1>Station not found</h1>";
+    return;
+  }
+
+  // SET PAGE CONTENT
+  document.getElementById("title").innerText = station.station_name;
+  document.getElementById("station-name").innerText = station.station_name;
+  document.getElementById("player").src = station.station_stream_url;
+
+})();
+</script>
+
+</body>
+</html>
